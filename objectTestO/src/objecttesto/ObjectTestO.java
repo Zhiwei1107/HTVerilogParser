@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
  */
 public class ObjectTestO {
     
+    private static boolean debug = false;
     private static String[] WiresArray;
     private static String[] WiresCountArray;
     private static int totalWireUsageCount;
@@ -32,14 +34,67 @@ public class ObjectTestO {
      */
     public static void main(String[] args) throws URISyntaxException, MalformedURLException, IOException {
         // TODO code application logic here
-        getWiresUsageStatistics();
-        initGates();
-        primaryInputs = "sys_clk, sys_rst_l, xmitH, uart_REC_dataH, test_mode, test_se, test_si,xmit_dataH".split(",");
-        primaryOutputs = "uart_XMIT_dataH, xmit_doneH, rec_readyH, test_so,rec_dataH".split(",");
-        GateParser parser = new GateParser(gatesDefinitionLines,WiresArray,primaryInputs,primaryOutputs);
-        parser.processInOuts();
+//        getWiresUsageStatistics();
+//        initGates();
+//        primaryInputs = "sys_clk, sys_rst_l, xmitH, uart_REC_dataH, test_mode, test_se, test_si,xmit_dataH".split(",");
+//        primaryOutputs = "uart_XMIT_dataH, xmit_doneH, rec_readyH, test_so,rec_dataH".split(",");
+//        GateParser parser = new GateParser(gatesDefinitionLines,WiresArray,primaryInputs,primaryOutputs);
+//        parser.processInOuts();
+          parseVerilogFile("/Users/reza/Desktop/uart.v");
     }
     
+    public static void parseVerilogFile(String path) throws FileNotFoundException, IOException{
+        BufferedReader br = new BufferedReader(new  FileReader(new File(path)));
+        
+        
+//        File f1 = new File("/Users/reza/Desktop/tempnet.txt");
+//        FileReader fr1  =  new  FileReader(f1);
+//        BufferedReader br1 = new BufferedReader(fr1);
+        String temp="";
+        String mainTemp = "";
+        Boolean loop = false;
+        
+        while((temp=br.readLine())!=null){
+            temp = temp.trim(); // remove leading and trailing whitespace
+            temp=temp.replaceAll("\\s+", " ");
+            mainTemp += temp;
+        }       
+        String[] lines  =  mainTemp.split(";");
+        for(int i=0;i<lines.length;i++)
+            System.out.println(lines[i]);
+        
+//        String[] wires = mainTemp.split(",");
+//        
+//        for(int j=0;j<wires.length;j++)
+//        {
+//            wires[j] = wires[j].replaceAll("\\s+", "");
+//        }
+//        WiresArray = wires;
+//        temp="";
+//        mainTemp = "";
+//        while((temp=br1.readLine())!=null){
+//            mainTemp += temp;
+//        } 
+//        int i=0;
+//        int iterator = 0;
+//        int counter = 0;
+//        String counterMemmory = "";
+//        gateLevelNetList = mainTemp;
+//        for (i=0;i<wires.length;i++)
+//        {
+//            iterator = ocCounter(mainTemp, wires[i]);
+//            if(iterator > 0){
+////                System.out.println(wires[i]+":"+iterator);
+//                counterMemmory+=wires[i]+":"+iterator+",";
+//                
+//            }
+//            counter+= iterator;
+//        }
+//        WiresCountArray  = counterMemmory.split(",");
+//        totalWireUsageCount = counter;
+//        br.close();
+    
+    }
     public static void getWiresUsageStatistics() throws IOException{
         File f = new File("/Users/reza/Desktop/wires.txt");
         FileReader fr  =  new  FileReader(f);
@@ -135,12 +190,13 @@ public class ObjectTestO {
         for(int i = 0; i< Gates1.length;i++)
         {
             Gates1[i] = Gates1[i].trim();
-            System.out.println(Gates1[i]);
+            if(debug)
+                System.out.println(Gates1[i]);
         }
         
         gatesDefinitionLines = Gates1; 
         
-//        System.out.println("\n\n\n\n");
+
         String temp = "";
         String[] GateNameArray = new String[gatesDefinitionLines.length];
         
@@ -153,9 +209,7 @@ public class ObjectTestO {
                 GateNameArrayList.add(GateNameArray[j]);
             
         }
-        
-//        for(int k=0; k<GateNameArrayList.size();k++)
-//            System.out.println(GateNameArrayList.get(k));
+
         usedGateList = GateNameArrayList;
         
         
