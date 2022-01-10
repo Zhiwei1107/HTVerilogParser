@@ -4,6 +4,7 @@
  */
 package objecttesto;
 
+import java.util.ArrayList;
 import javax.swing.tree.DefaultTreeSelectionModel;
 
 /**
@@ -13,14 +14,25 @@ import javax.swing.tree.DefaultTreeSelectionModel;
 public class GateParser {
     
     private static boolean debug = false;
+    private static boolean paramsDebug = true;
     private static String[] gateDefinitions;
     private static String[][] network;
     private static String[] wires;
     private static String[] primaryInputs;
     private static String[] primaryOutputs;
     private static String[][] inouts;
+    
     private static float LGFIAverage;
     private static int[] LGFI;
+    
+    private static int[] FFI;
+    private static float FFIAverage;
+    
+    private static int[] PI;
+    private static float PIAverage;
+    
+    private static boolean nullFlag = false;
+    
     
     public GateParser(String[] GateDefinitions, String[] Wires, String[] PrimaryInputs, String[] PrimaryOutputs){
         gateDefinitions = GateDefinitions;
@@ -29,12 +41,265 @@ public class GateParser {
         primaryOutputs = PrimaryOutputs;
         inouts = new String[gateDefinitions.length][2];
         LGFI = new int[wires.length];
+        FFI = new int[wires.length];
+        PI = new int[wires.length];
         processGates();
         calculateLGFI();
+//        System.out.println(getFFiOfWire("n275"));
+        calculateFFI();
+        calculatePI();
+        
+    }
+   
+/**
+ * @description This part of code is calculating FFi and FFo parameter
+ * dedicated to functions of FFi and FFo
+ **/ 
+    public void calculateFFI(){
+        int total=0;
+        for(int i=0;i<wires.length;i++){
+            FFI[i]=getFFiOfWire(wires[i].trim());
+            total+=FFI[i];
+            if(paramsDebug)
+                System.out.println("FFI("+wires[i]+")\t"+FFI[i]);
+        }
+        FFIAverage = (float) total/wires.length;
         
     }
     
+    public int getFFiOfWire(String wire){
+        return getFFI(getInputGates(wire));
+    }
+//    public int getFFI(String[] wires){
+//        int result = 0;
+//        boolean flag=true;
+//        int[] temp;
+//        String[] currentWire = wires;
+//        while(flag){
+//            for(int i=0;i<currentWire.length;i++){
+//                temp = getInputGates(currentWire[i]);
+//                if(checkFFGateForInput(temp))
+//                    flag = false;
+//            }
+//            if(result == 0){
+//                result++;
+//                for(int )
+//            }
+//                
+//        }
+//        return result;
+//    }
     
+    public int getFFI(int[] GateNumber){
+        int result = 0;
+        boolean flag=true;
+        int[] temp;
+        temp = GateNumber;
+        while(flag){
+            
+            if(checkFFGateForInput(temp))
+                        flag = false;
+            else{
+                result++;
+                temp = getPreviousGates(temp);
+            }
+                
+        }
+        if(nullFlag)
+        {
+            result = 10;
+            nullFlag  = false;
+        }
+        return result;
+    }
+    
+    public int[] getPreviousGates(int GateNumber){
+        int[] results;
+        String temp="";
+        String result="";
+        int  counter=0;
+        String[] inputwires = inouts[GateNumber][0].split(",");
+        for(int i=0;i<inputwires.length;i++){
+            temp=getInputGatesString(inputwires[i]);
+            if(temp.length()>0)
+                if(counter==0){
+                        counter++;
+                        result=temp;
+                    }
+                else result+=","+temp;
+        }
+        String[] tempres = unify(result.split(","));
+        
+        return getIntArray(tempres);
+            
+    }
+    
+        public int[] getPreviousGates(int[] GateNumber){
+        int[] results;
+        String temp="";
+        String result="";
+        int  counter=0;
+        if(GateNumber!=null){
+        for(int j=0;j<GateNumber.length;j++){
+        String[] inputwires = inouts[GateNumber[j]][0].split(",");
+            for(int i=0;i<inputwires.length;i++){
+                temp=getInputGatesString(inputwires[i]);
+                if(temp.length()>0)
+                    if(counter==0){
+                        counter++;
+                        result=temp;
+                    }
+                    else result+=","+temp;
+            }
+        }
+        String[] tempres = unify(result.split(","));
+        
+        return getIntArray(tempres);
+        }
+        return null;
+    }
+    
+    public int[] getIntArray(String[] array){
+        
+        int[] result = new int[array.length];
+        for(int i=0;i<array.length;i++){
+           if(array[i].length()>0)
+            result[i]=Integer.parseInt(array[i].trim());
+        }
+        return result;
+    }
+    
+    public int[] getIntArray(String string){
+        String[] array = string.split(",");
+        int[] result = new int[array.length];
+        for(int i=0;i<array.length;i++)
+            result[i]=Integer.parseInt(array[i].trim());
+        return result;
+    }
+    
+    
+    public String[] unify(String[] strings){
+        ArrayList<String> list  = new ArrayList<String>();
+        for(int i=0;i<strings.length;i++)
+            if(!list.contains(strings[i]))
+                list.add(strings[i]);
+        String[] result = new String[list.size()];
+        result = list.toArray(result);
+        return result;
+    }
+    
+    public boolean checkFFGateForInput(int[] inputgates){
+        boolean result = false;
+        if(inputgates!=null)
+            for(int i=0;i<inputgates.length;i++)
+                if(getGateType(gateDefinitions[inputgates[i]]).equals("SDFFSRX1"))
+                    result=true;
+       /****imp****/ if(inputgates==null){
+                        result=true;
+                        nullFlag = true;
+                     }
+        return result;
+    }
+    
+    
+    public void calculateFFO(){
+        
+    }
+    
+    public int getFFO(String wire){
+        int result = 0;
+        
+        return result;
+    
+    }
+    
+    public String getGateType(String line){ return line.trim().split(" ")[0]; }
+    
+/**
+ * @description This part of code is calculating PI and PO parameter
+ * dedicated to functions of FFi and FFo
+ **/    
+    
+    public void calculatePI(){
+        int total=0;
+        for(int i=0;i<wires.length;i++){
+            PI[i]  = getPI(wires[i]);
+            total+=PI[i];
+            if(paramsDebug)
+                System.out.println("PI("+wires[i]+")\t"+PI[i]);
+        }
+        PIAverage = (float) total/wires.length;
+        
+    }
+    
+    public int getPI(String wire){
+        int result = 0;
+        int[] inpgates = getInputGates(wire);
+        result = getPIForGate(inpgates);
+        return result;
+    }
+    
+    public int getPIForGate(int[] GateNumber){
+        int result = 1;
+        boolean flag=true;
+        int[] temp;
+        temp = GateNumber;
+        while(flag){
+            
+            if(checkPrimaryInputForInput(temp))
+                        flag = false;
+            else{
+                result++;
+                temp = getPreviousGates(temp);
+            }
+                
+        }
+        if(nullFlag)
+        {
+            result = 10;
+            nullFlag  = false;
+        }
+        return result;
+    }
+    
+    public boolean checkPrimaryInputForInput(int[] inputgates){
+        boolean result = false;
+        String[] temp;
+        if(inputgates!=null)
+            for(int i=0;i<inputgates.length;i++)
+            {
+                temp = inouts[inputgates[i]][0].split(",");
+                for(int j=0;j<temp.length;j++)
+                    if(isPrimaryInput(temp[j].trim()))
+                        result=true;
+            }
+//                if(getGateType(gateDefinitions[inputgates[i]]).equals("SDFFSRX1"))
+//                    result=true;
+       /****imp****/ if(inputgates==null){
+                        result=true;
+                        nullFlag = true;
+                     }
+        return result;
+    }
+    
+    public static boolean isPrimaryInput(String input){
+        boolean result=false;
+        for(int i=0;i<primaryInputs.length;i++)
+            if(primaryInputs[i].trim().equals(input.trim()))
+                result=true;
+        return result;
+    }
+    
+    public void calculatePO(){
+        
+    }
+    
+    public int getPO(String wire){
+        int result = 0;
+        
+        return result;
+    
+    }
     
 /**
  * @description This part of code is calculating LGFI parameter
@@ -46,17 +311,18 @@ public class GateParser {
         int total = 0;
         for(int i=0;i<wires.length;i++){
             LGFI[i]=getLGFi(wires[i]);
+            if(paramsDebug)
+                System.out.println("LGFI("+wires[i]+")\t"+LGFI[i]);
             total+=LGFI[i];
         }
         LGFIAverage  = (float)total/wires.length;
-        if(debug)
-            System.out.println(LGFIAverage);
+
     }
     
     //calculate Logic Gate Fan in(LGFi) for a  wire
     public int getLGFi(String Wire){
         int lgfi = 0;
-        int[] inputs = getIntputGates(Wire);
+        int[] inputs = getInputGates(Wire);
         String firstLevelGateInputs= "";
         String[] tempInputs;
         int[] secondLevelGates;
@@ -69,11 +335,11 @@ public class GateParser {
                     tempInputs = firstLevelGateInputs.split(",");
                     for(int k=0;k<tempInputs.length;k++)
                     {
-                        secondLevelGates = getIntputGates(tempInputs[k]);
+                        secondLevelGates = getInputGates(tempInputs[k]);
                         lgfi+=getGateInputsCount(secondLevelGates);
                     }
                 } else if(firstLevelGateInputs.length()>0){
-                        secondLevelGates = getIntputGates(firstLevelGateInputs);
+                        secondLevelGates = getInputGates(firstLevelGateInputs);
                         lgfi+=getGateInputsCount(secondLevelGates);
                 }
             }
@@ -186,7 +452,7 @@ public class GateParser {
     
     }
     
-    public int[] getIntputGates(String WireName){
+    public int[] getInputGates(String WireName){
         String result = "";
         int counter = 0;
         for(int i=0;i<inouts.length;i++)
@@ -214,6 +480,26 @@ public class GateParser {
             return linenumbers;
         } 
         return null;
+    }
+    
+    
+    public String getInputGatesString(String WireName){
+        String result = "";
+        int counter = 0;
+        for(int i=0;i<inouts.length;i++)
+            if(checkForStringWithSplit(inouts[i][1], WireName)){
+                if(counter==0){
+                    counter++;
+                    result = Integer.toString(i);
+                }
+                else result += ","+i;
+             }
+        if(debug)
+            System.out.println(result);
+        String[] strings;
+        int[] linenumbers;
+        
+        return result;
     }
     
     public boolean checkForStringWithSplit(String input, String wire){

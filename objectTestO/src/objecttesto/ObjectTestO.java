@@ -34,8 +34,8 @@ public class ObjectTestO {
         // TODO code application logic here
         getWiresUsageStatistics();
         initGates();
-        primaryInputs = new String[2];
-        primaryOutputs = new String[2];
+        primaryInputs = "sys_clk, sys_rst_l, xmitH, uart_REC_dataH, test_mode, test_se, test_si,xmit_dataH".split(",");
+        primaryOutputs = "uart_XMIT_dataH, xmit_doneH, rec_readyH, test_so,rec_dataH".split(",");
         GateParser parser = new GateParser(gatesDefinitionLines,WiresArray,primaryInputs,primaryOutputs);
         parser.processInOuts();
     }
