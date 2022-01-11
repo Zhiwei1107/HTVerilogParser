@@ -41,12 +41,15 @@ public class GateParser {
     private static int[] PO;
     private static float POAverage;
     
+    private static String[] trojanNets;
     private static boolean nullFlag = false;
     
+    private static int largeNum=10;
     
-    public GateParser(String[] GateDefinitions, String[] Wires, String[] PrimaryInputs, String[] PrimaryOutputs) throws IOException{
+    public GateParser(String[] GateDefinitions, String[] Wires, String[] PrimaryInputs, String[] PrimaryOutputs,String Trojans) throws IOException{
         gateDefinitions = GateDefinitions;
         wires = Wires;
+        trimmer(wires);
         primaryInputs = PrimaryInputs;
         primaryOutputs = PrimaryOutputs;
         inouts = new String[gateDefinitions.length][2];
@@ -64,9 +67,72 @@ public class GateParser {
         calculateFFO();
         calculatePO();
 //        printVectorsWithWireName();
-        saveInFile("/Users/reza/Desktop/output.txt");
+//        saveInFile("/Users/reza/Desktop/output.txt");
+//        printVectors();
+        processTrojanNet(Trojans);
+        printVectorsForScikit();
+    }
+    
+    
+    public void trimmer(String[] strArray){
+        for(int i=0;i<strArray.length;i++)
+            strArray[i]=strArray[i].trim();
     }
    
+    /**
+     * 
+     * @description Trojan lines parser 
+     */
+    
+    
+    public void  processTrojanNet(String lines){
+        String Lines = lines.replaceAll("\\s+", " ").trim();
+        String[] trojanLines =  Lines.split(";");
+        String result="";
+        for(int i=0;i<trojanLines.length;i++){
+            if(i==0)
+                result = parsTrojanLine(trojanLines[i]);
+            else 
+                result += parsTrojanLine(trojanLines[i]);
+        }
+        
+        trojanNets =  result.split(",");
+        
+        
+    }
+    
+    public String parsTrojanLine(String line){
+        int loc=0;
+        int temp=0;
+        String tempstr = "";
+        String result="";
+        
+        loc = line.indexOf("(")+1;
+        tempstr = line.substring(loc);
+        loc = tempstr.indexOf("(")+1;
+        tempstr = tempstr.substring(loc);
+        temp = tempstr.indexOf(")");
+        result = nullRemover(tempstr.substring(0,temp).trim());
+        while((loc = tempstr.indexOf(",")+1)>0){
+            tempstr = tempstr.substring(loc);
+            loc = tempstr.indexOf("(")+1;
+            temp = tempstr.indexOf(")");
+            result += ","+nullRemover(tempstr.substring(loc,temp).trim());
+        }
+        
+        return result;
+        
+    }
+    
+    //function which checks if a net is used in trojan Gates or no!
+    public static boolean isInTrojanNet(String inpwire){
+        boolean result=false;
+        for(int i=0;i<trojanNets.length;i++)
+            if(trojanNets[i].trim().equals(inpwire.trim()))
+                result=true;
+        return result;
+    }
+    
     
 /**
  * @description functions  for printing and saving the  result in a seperate file
@@ -84,6 +150,39 @@ public class GateParser {
         System.out.println("Wire Name,\tLGFi,FFi,FFo,PI,PO");
         for(int i=0;i<wires.length;i++)
             System.out.println(wires[i]+",\t"+LGFI[i]+","+FFI[i]+","+FFO[i]+","+PI[i]+","+PO[i]);
+    }
+    
+    //prints the well-suited input for sklearn in python 
+    public static void printVectorsForScikit(){
+        int counter=0;
+        String normal="Normal";
+        String trojan="Trojan";
+        System.out.println("LGFi,FFi,FFo,PI,PO,Class");
+        for(int i=0;i<wires.length;i++){
+            if(isInTrojanNet(wires[i])){
+                System.out.println(LGFI[i]+","+FFI[i]+","+FFO[i]+","+PI[i]+","+PO[i]+","+trojan);
+                counter++;
+            } else
+                System.out.println(LGFI[i]+","+FFI[i]+","+FFO[i]+","+PI[i]+","+PO[i]+","+normal);
+        }
+        System.out.println(counter);
+    }
+    
+    
+    //prints the well-suited input for sklearn in python with names 
+    public static void printVectorsForScikitWithNames(){
+        int counter=0;
+        String normal="Normal";
+        String trojan="Trojan";
+        System.out.println("Name,LGFi,FFi,FFo,PI,PO,Class");
+        for(int i=0;i<wires.length;i++){
+            if(isInTrojanNet(wires[i])){
+                System.out.println(wires[i]+","+LGFI[i]+","+FFI[i]+","+FFO[i]+","+PI[i]+","+PO[i]+","+trojan);
+                counter++;
+            } else
+                System.out.println(wires[i]+","+LGFI[i]+","+FFI[i]+","+FFO[i]+","+PI[i]+","+PO[i]+","+normal);
+        }
+        System.out.println(counter);
     }
     
     //saves the vector in a file where you choose
@@ -163,7 +262,7 @@ public class GateParser {
         }
         if(nullFlag)
         {
-            result = 1000;
+            result = largeNum;
             nullFlag  = false;
         }
         return result;
@@ -302,7 +401,7 @@ public class GateParser {
         }
         if(nullFlag)
         {
-            result = 1000;
+            result = largeNum;
             nullFlag  = false;
         }
         return result;
@@ -412,7 +511,7 @@ public class GateParser {
         }
         if(nullFlag)
         {
-            result = 1000;
+            result = largeNum;
             nullFlag  = false;
         }
         return result;
@@ -486,7 +585,7 @@ public class GateParser {
         }
         if(nullFlag)
         {
-            result = 1000;
+            result = largeNum;
             nullFlag  = false;
         }
         return result;
@@ -739,14 +838,16 @@ public class GateParser {
     }
     
     public boolean checkForStringWithSplit(String input, String wire){
-        if(input.contains(",")){
-            String[] Array = input.split(",");
-            for(int i=0;i<Array.length;i++)
-                if(Array[i].trim().equals(wire.trim()))
+        if(input!=null){
+            if(input.contains(",")){
+                String[] Array = input.split(",");
+                for(int i=0;i<Array.length;i++)
+                    if(Array[i].trim().equals(wire.trim()))
+                        return true;
+            } else {
+                if(input.trim().equals(wire.trim()))
                     return true;
-        } else {
-            if(input.trim().equals(wire.trim()))
-                return true;
+            }
         }
         return false;
     }
@@ -1169,11 +1270,215 @@ public class GateParser {
                 if(debug)
                     System.out.println(result[0]+"\t"+result[1]);
                 break;
+                case("LSDNENX1"):
+                    result = getInputOutputs(line,2,1);
+                    break;
+                
+                case("SDFFX1"):
+                    result = getInputOutputs(line,4,2);
+                    break;
+                    
+                case("NAND2X0"):
+                    result = getInputOutputs(line,2,1);
+                    break;
+                    
+                case("NAND3X0"):
+                    result = getInputOutputs(line,3,1);
+                    break;
+                    
+                case("AO222X1"):
+                    result = getInputOutputs(line,6,1);
+                    break;
+                
+                case("AND4X1"):
+                    result = getInputOutputs(line,4,1);
+                    break;
+                
+                case("NAND4X0"):
+                    result = getInputOutputs(line,4,1);
+                    break;
+                
+                case("AOI222X1"):
+                    result = getInputOutputs(line,6,1);
+                    break;
+                    
+                case("INVX0"):
+                    result = getInputOutputs(line,1,1);
+                    break;
+                    
+                case("AO22X1"):
+                    result = getInputOutputs(line,4,1);
+                    break;
+                    
+                case("AO221X1"):
+                    result = getInputOutputs(line,5,1);
+                    break;
+                    
+                case("OA22X1"):
+                    result = getInputOutputs(line,4,1);
+                    break;
+                    
+                case("ISOLANDX1"):
+                    result = getInputOutputs(line,2,1);
+                    break;
+                    
+                case("NOR2X0"):
+                    result = getInputOutputs(line,2,1);
+                    break;
+                    
+                case("XOR3X1"):
+                    result = getInputOutputs(line,3,1);
+                    break;
+                    
+                case("XNOR3X1"):
+                    result = getInputOutputs(line,3,1);
+                    break;
+                    
+                case("XNOR2X1"):
+                    result = getInputOutputs(line,2,1);
+                    break;
+                    
+                case("NOR4X0"):
+                    result = getInputOutputs(line,4,1);
+                    break;
+                    
+                case("AO21X1"):
+                    result = getInputOutputs(line,3,1);
+                    break;
+                    
+                case("AND3X1"):
+                    result = getInputOutputs(line,3,1);
+                    break;
+                    
+                case("OA21X1"):
+                    result = getInputOutputs(line,3,1);
+                    break;
+                    
+                case("OA221X1"):
+                    result = getInputOutputs(line,5,1);
+                    break;
+                    
+                case("NOR3X0"):
+                    result = getInputOutputs(line,3,1);
+                    break;
+                    
+                case("NBUFFX2"):
+                    result = getInputOutputs(line,1,1);
+                    break;
+                    
+                case("AOI221X1"):
+                    result = getInputOutputs(line,5,1);
+                    break;
+                    
+                case("OAI22X1"):
+                    result = getInputOutputs(line,4,1);
+                    break;
+                    
+                case("OR3X1"):
+                    result = getInputOutputs(line,3,1);
+                    break;
+                    
+                case("OA222X1"):
+                    result = getInputOutputs(line,6,1);
+                    break;
+                    
+                case("AND2X2"):
+                    result = getInputOutputs(line,2,2);
+                    break;
+                    
+                case("DFFNX2"):
+                    result = getInputOutputs(line,2,2);
+                    break;
+                    
+                case("LSDNX1"):
+                    result = getInputOutputs(line,1,1);
+                    break;
+                    
+                case("NOR3X1"):
+                    result = getInputOutputs(line,3,1);
+                    break;
+                    
+                case("NOR2X2"):
+                    result = getInputOutputs(line,2,1);
+                    break;
+                    
+                case("NOR4X1"):
+                    result = getInputOutputs(line,4,1);
+                    break;
+                    
+                case("OAI221X1"):
+                    result = getInputOutputs(line,5,1);
+                    break;
+                    
+                case("OAI222X1"):
+                    result = getInputOutputs(line,6,1);
+                    break;
+                    
+                case("INVX8"):
+                    result = getInputOutputs(line,1,1);
+                    break;
+                    
+                case("MUX21X2"):
+                    result = getInputOutputs(line,3,2);
+                    break;
+                    
+                case("DFFX2"):
+                    result = getInputOutputs(line,2,2);
+                    break;
+                    
+                case("AND3X4"):
+                    result = getInputOutputs(line,3,1);
+                    break;
+                    
+                case("MUX21X1"):
+                    result = getInputOutputs(line,3,1);
+                    break;
+                    
                 
 
             }
         
         return result;      
+    }
+    
+    public String[] getInputOutputs(String line, int  inpnum, int outnum){
+        String[] result = new  String[2];
+        int loc=0;
+        int temp=0;
+        String tempstr = "";
+        
+        loc = line.indexOf("(")+1;
+        tempstr = line.substring(loc);
+        loc = tempstr.indexOf("(")+1;
+        tempstr = tempstr.substring(loc);
+        temp = tempstr.indexOf(")");
+        result[0] = nullRemover(tempstr.substring(0,temp).trim());
+        if(inpnum>1){
+            for(int i=0;i<inpnum-1;i++){
+                loc = tempstr.indexOf(",")+1;
+                tempstr = tempstr.substring(loc);
+                loc = tempstr.indexOf("(")+1;
+                temp = tempstr.indexOf(")");
+                result[0] += ","+nullRemover(tempstr.substring(loc,temp).trim());
+            }
+        }
+        
+        loc = tempstr.indexOf(",")+1;
+        tempstr = tempstr.substring(loc);
+        loc = tempstr.indexOf("(")+1;
+        temp = tempstr.indexOf(")");
+        result[1] = nullRemover(tempstr.substring(loc,temp).trim());
+        if(outnum>1){
+            for(int j=0;j<outnum-1;j++)
+                if(!(tempstr.indexOf(",")<0)){
+                    loc = tempstr.indexOf(",")+1;
+                    tempstr = tempstr.substring(loc);
+                    loc = tempstr.indexOf("(")+1;
+                    temp = tempstr.indexOf(")");
+                    result[1] += ","+nullRemover(tempstr.substring(loc,temp).trim());
+                }
+        }
+        return result;
     }
     
     public String nullRemover(String input){
