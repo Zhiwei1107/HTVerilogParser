@@ -44,9 +44,16 @@ public class GateParser {
     private static String[] trojanNets;
     private static boolean nullFlag = false;
     
-    private static int largeNum=10;
+    private static ArrayList<String> FFGates;
+    private static int largeNum=1000;
     
     public GateParser(String[] GateDefinitions, String[] Wires, String[] PrimaryInputs, String[] PrimaryOutputs,String Trojans) throws IOException{
+        FFGates = new ArrayList<String>();
+        FFGates.add("DFFNX2");
+        FFGates.add("SDFFSRX1");
+        FFGates.add("DFFX2");
+        FFGates.add("SDFFX1");
+        
         gateDefinitions = GateDefinitions;
         wires = Wires;
         trimmer(wires);
@@ -70,7 +77,7 @@ public class GateParser {
 //        saveInFile("/Users/reza/Desktop/output.txt");
 //        printVectors();
         processTrojanNet(Trojans);
-        printVectorsForScikit();
+        printVectorsForScikitWithNames();
     }
     
     
@@ -344,10 +351,11 @@ public class GateParser {
     }
     
     public boolean checkFFGateForInput(int[] inputgates){
+        
         boolean result = false;
         if(inputgates!=null)
             for(int i=0;i<inputgates.length;i++)
-                if(getGateType(gateDefinitions[inputgates[i]]).equals("SDFFSRX1"))
+                if(FFGates.contains(getGateType(gateDefinitions[inputgates[i]]).trim().toUpperCase()))
                     result=true;
        /****imp****/ if(inputgates==null){
                         result=true;
@@ -459,7 +467,7 @@ public class GateParser {
         boolean result = false;
         if(inputgates!=null)
             for(int i=0;i<inputgates.length;i++)
-                if(getGateType(gateDefinitions[inputgates[i]]).equals("SDFFSRX1"))
+                if(FFGates.contains(getGateType(gateDefinitions[inputgates[i]]).trim().toUpperCase()))
                     result=true;
        /****imp****/ if(inputgates==null){
                         result=true;
