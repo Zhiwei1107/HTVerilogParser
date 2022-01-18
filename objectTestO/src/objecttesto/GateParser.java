@@ -17,35 +17,35 @@ import javax.swing.tree.DefaultTreeSelectionModel;
  */
 public class GateParser {
     
-    private static boolean debug = false;
-    private static boolean paramsDebug = false;
-    private static String[] gateDefinitions;
-    private static String[][] network;
-    private static String[] wires;
-    private static String[] primaryInputs;
-    private static String[] primaryOutputs;
-    private static String[][] inouts;
+    private boolean debug = false;
+    private boolean paramsDebug = false;
+    private String[] gateDefinitions;
+    private String[][] network;
+    private String[] wires;
+    private String[] primaryInputs;
+    private String[] primaryOutputs;
+    private String[][] inouts;
     
-    private static float LGFIAverage;
-    private static int[] LGFI;
+    private float LGFIAverage;
+    private int[] LGFI;
     
-    private static int[] FFI;
-    private static float FFIAverage;
+    private int[] FFI;
+    private float FFIAverage;
     
-    private static int[] PI;
-    private static float PIAverage;
+    private int[] PI;
+    private float PIAverage;
     
-    private static int[] FFO;
-    private static float FFOAverage;
+    private int[] FFO;
+    private float FFOAverage;
     
-    private static int[] PO;
-    private static float POAverage;
+    private int[] PO;
+    private float POAverage;
     
-    private static String[] trojanNets;
-    private static boolean nullFlag = false;
+    private String[] trojanNets;
+    private boolean nullFlag = false;
     
-    private static ArrayList<String> FFGates;
-    private static int largeNum=200000;
+    private ArrayList<String> FFGates;
+    private int largeNum=200000;
     
     public GateParser(String[] GateDefinitions, String[] Wires, String[] PrimaryInputs, String[] PrimaryOutputs,String Trojans) throws IOException{
         FFGates = new ArrayList<String>();
@@ -55,35 +55,42 @@ public class GateParser {
         FFGates.add("SDFFX1");
         
         gateDefinitions = GateDefinitions;
-        wires = Wires;
-        trimmer(wires);
+        
         primaryInputs = PrimaryInputs;
         primaryOutputs = PrimaryOutputs;
         inouts = new String[gateDefinitions.length][2];
+        
+        
+        processGates();
+        processTrojanNet(Trojans);
+        
+        wires = addNotDefinedWiresToWiresArray(Wires,trojanNets);
+        trimmer(wires);
         LGFI = new int[wires.length];
         FFI = new int[wires.length];
         PI = new int[wires.length];
-        
         FFO = new int[wires.length];
         PO = new int[wires.length];
-        
         processGates();
-        calculateFFI();
-        System.out.println("FFI Done");
+//        System.out.println(trojanNets.length);
+
         calculateLGFI();
         System.out.println("LGFI Done");
-        System.out.println("Wires Count:"+wires.length);
+        calculateFFI();
+        System.out.println("FFI Done");
         calculatePI();
         System.out.println("PI Done");
         calculateFFO();
         System.out.println("FFO Done");
         calculatePO();
         System.out.println("PO Done");
-
+//          System.out.println(getPO(wires[5481]));
 //        printVectorsWithWireName();
 //        saveInFile("/Users/reza/Desktop/output.txt");
-        printVectors();
-        processTrojanNet(Trojans);
+//        printVectors();
+
+
+ 
 //        printVectorsForScikit();
 //        System.out.println(getFFiOfWire("N690"));f
     }
@@ -93,12 +100,30 @@ public class GateParser {
         for(int i=0;i<strArray.length;i++)
             strArray[i]=strArray[i].trim();
     }
-   
+    
+    
     /**
      * 
      * @description Trojan lines parser 
      */
     
+    public void printUniqueTrojanNets(String[] arrString){
+        ArrayList<String> temparr = new ArrayList<String>();
+        for(int i=0;i<arrString.length;i++)
+            if(!temparr.contains(arrString[i].trim()))
+                temparr.add(arrString[i].trim());
+        System.out.println(temparr.size());
+    }
+    
+    public String[] unifyTrojanNets(String[] arrString){
+        ArrayList<String> temparr = new ArrayList<String>();
+        
+        for(int i=0;i<arrString.length;i++)
+            if(!temparr.contains(arrString[i].trim()))
+                temparr.add(arrString[i].trim());
+        String[] result = new String[temparr.size()];
+        return temparr.toArray(result);
+    }
     
     public void  processTrojanNet(String lines){
         String Lines = lines.replaceAll("\\s+", " ").trim();
@@ -108,15 +133,47 @@ public class GateParser {
             if(i==0)
                 result = parsTrojanLine(trojanLines[i]);
             else 
-                result += parsTrojanLine(trojanLines[i]);
+                result += ","+parsTrojanLine(trojanLines[i]);
         }
         
-        trojanNets =  result.split(",");
+        trojanNets =  unifyTrojanNets(result.split(","));
+        
         
         
     }
     
+    public String[] addNotDefinedWiresToWiresArray(String[] Wirs, String[] Trojs){
+        String[] total;
+        int counter = 0;
+        ArrayList<String> notListeds = new ArrayList<String>();
+        ArrayList<String> Listeds = new ArrayList<String>();
+        for(int i=0;i<Wirs.length;i++){
+            for(int j=0;j<Trojs.length;j++)
+                if(Wirs[i].trim().equals(Trojs[j].trim()))
+                {
+                    counter++;
+                    notListeds.add(Trojs[j].trim());
+                }
+        }
+//        System.out.println(counter);
+        for(int i=0;i<Trojs.length;i++)
+            if(!notListeds.contains(Trojs[i]))
+                if(!Trojs[i].contains("'"))
+                    Listeds.add(Trojs[i]);
+            
+        total = new String[Wirs.length+Listeds.size()];
+        
+        for(int i=0;i<Wirs.length;i++)
+            total[i] = Wirs[i];
+        for(int i=Wirs.length;i<Wirs.length+Listeds.size();i++)
+            total[i] = Listeds.get(i-Wirs.length);
+
+        return total;
+    }
+    
+    //trojan definition line  parser
     public String parsTrojanLine(String line){
+//        System.out.println(line);
         int loc=0;
         int temp=0;
         String tempstr = "";
@@ -140,7 +197,7 @@ public class GateParser {
     }
     
     //function which checks if a net is used in trojan Gates or no!
-    public static boolean isInTrojanNet(String inpwire){
+    public boolean isInTrojanNet(String inpwire){
         boolean result=false;
         for(int i=0;i<trojanNets.length;i++)
             if(trojanNets[i].trim().equals(inpwire.trim()))
@@ -154,21 +211,21 @@ public class GateParser {
  **/    
     
     //only prints the vectors list
-    public static void printVectors(){
+    public void printVectors(){
         System.out.println("LGFi,FFi,FFo,PI,PO");
         for(int i=0;i<wires.length;i++)
             System.out.println(LGFI[i]+","+FFI[i]+","+FFO[i]+","+PI[i]+","+PO[i]);
     }
     
     //prints the vectors with their name as firs member in line array
-    public static void printVectorsWithWireName(){
+    public void printVectorsWithWireName(){
         System.out.println("Wire Name,\tLGFi,FFi,FFo,PI,PO");
         for(int i=0;i<wires.length;i++)
             System.out.println(wires[i]+",\t"+LGFI[i]+","+FFI[i]+","+FFO[i]+","+PI[i]+","+PO[i]);
     }
     
     //prints the well-suited input for sklearn in python 
-    public static void printVectorsForScikit(){
+    public void printVectorsForScikit(){
         int counter=0;
         String normal="Normal";
         String trojan="Trojan";
@@ -185,7 +242,7 @@ public class GateParser {
     
     
     //prints the well-suited input for sklearn in python with names 
-    public static void printVectorsForScikitWithNames(){
+    public void printVectorsForScikitWithNames(){
         int counter=0;
         String normal="Normal";
         String trojan="Trojan";
@@ -201,7 +258,7 @@ public class GateParser {
     }
     
     //saves the vector in a file where you choose
-    public static void saveInFile(String path) throws IOException{
+    public void saveInFile(String path) throws IOException{
         BufferedWriter bw  =  new BufferedWriter(new FileWriter(new File(path)));
         for(int i=0;i<wires.length;i++)
            bw.append(LGFI[i]+","+FFI[i]+","+FFO[i]+","+PI[i]+","+PO[i]+"\n");
@@ -210,7 +267,7 @@ public class GateParser {
     }
     
     //saves the vector in a file where you choose with name of the wire
-    public static void saveInFileWithNames(String path) throws IOException{
+    public void saveInFileWithNames(String path) throws IOException{
         BufferedWriter bw  =  new BufferedWriter(new FileWriter(new File(path)));
         for(int i=0;i<wires.length;i++)
            bw.append(wires[i]+","+LGFI[i]+","+FFI[i]+","+FFO[i]+","+PI[i]+","+PO[i]+"\n");
@@ -218,7 +275,7 @@ public class GateParser {
         bw.close();
     }
     
-    public static void saveInFileForScikit(String path,boolean append) throws IOException{
+    public void saveInFileForScikit(String path,boolean append) throws IOException{
         BufferedWriter bw  =  new BufferedWriter(new FileWriter(new File(path),append));
         String normal="Normal";
         String trojan="Trojan";
@@ -235,6 +292,38 @@ public class GateParser {
     }
     
     
+    public void saveInFileForScikit(String path, String path1,boolean append) throws IOException{
+        BufferedWriter bw  =  new BufferedWriter(new FileWriter(new File(path),append));
+        BufferedWriter bw1  =  new BufferedWriter(new FileWriter(new File(path1),append));
+        String normal="Normal";
+        String trojan="Trojan";
+        ArrayList<String> normals = new  ArrayList<String>();
+        ArrayList<String> trojans = new  ArrayList<String>();
+//        if(!append)
+//            bw.append("LGFi,FFi,FFo,PI,PO,Class\n");
+        for(int i=0;i<wires.length;i++){
+            if(isInTrojanNet(wires[i])){
+                if(!trojans.contains(LGFI[i]+","+FFI[i]+","+FFO[i]+","+PI[i]+","+PO[i]+","+trojan))
+                    trojans.add(LGFI[i]+","+FFI[i]+","+FFO[i]+","+PI[i]+","+PO[i]+","+trojan);
+            } else{
+                if(!normals.contains(LGFI[i]+","+FFI[i]+","+FFO[i]+","+PI[i]+","+PO[i]+","+normal))
+                    normals.add(LGFI[i]+","+FFI[i]+","+FFO[i]+","+PI[i]+","+PO[i]+","+normal);
+            }
+        }
+
+
+        for(int i=0;i<normals.size();i++)
+                bw.append(normals.get(i)+"\n");
+        for(int i=0;i<trojans.size();i++)
+                bw1.append(trojans.get(i)+"\n");      
+
+        bw.flush();
+        bw.close();
+        bw1.flush();
+        bw1.close();
+    }
+    
+    
 /**
  * @description This part of code is calculating FFi and FFo parameter
  * dedicated to functions of FFi and FFo
@@ -243,7 +332,7 @@ public class GateParser {
     public void calculateFFI(){
         int total=0;
         for(int i=0;i<wires.length;i++){
-            System.out.println(wires[i]);
+//            System.out.println(wires[i]);
             FFI[i]=getFFiOfWire(wires[i].trim());
             total+=FFI[i];
             if(paramsDebug)
@@ -408,7 +497,7 @@ public class GateParser {
     public void calculateFFO(){
         int total=0;
         for(int i=0;i<wires.length;i++){
-            System.out.println(i);
+//            System.out.println(i);
             FFO[i]=getFFoOfWire(wires[i].trim());
             total+=FFO[i];
             if(paramsDebug)
@@ -426,6 +515,9 @@ public class GateParser {
         int result = 0;
         boolean flag=true;
         int[] temp;
+        int[] firstGates = GateNumber;
+        ArrayList<Integer> nextGates = new ArrayList<Integer>();
+        int repeatCounter=0;
         temp = GateNumber;
         while(flag){
             
@@ -434,6 +526,21 @@ public class GateParser {
             else{
                 result++;
                 temp = getNextGates(temp);
+                if(temp!=null)
+                if(temp.length==1){
+                    if(firstGates.length==1)
+                    {
+                        if(!nextGates.contains(temp[0]))
+                            nextGates.add(temp[0]);
+                        else repeatCounter++;
+                        if(repeatCounter>wires.length)
+                        {
+                            flag=false;
+                            nullFlag=true;
+                        }
+                        
+                    }
+                }
             }
                 
         }
@@ -516,7 +623,7 @@ public class GateParser {
     public void calculatePI(){
         int total=0;
         for(int i=0;i<wires.length;i++){
-            System.out.println(i);
+//            System.out.println(i);
             PI[i]  = getPI(wires[i]);
             total+=PI[i];
             if(paramsDebug)
@@ -576,7 +683,7 @@ public class GateParser {
         return result;
     }
     
-    public static boolean isPrimaryInput(String input){
+    public boolean isPrimaryInput(String input){
         boolean result=false;
         for(int i=0;i<primaryInputs.length;i++)
             if(primaryInputs[i].trim().equals(input.trim()))
@@ -591,7 +698,7 @@ public class GateParser {
     public void calculatePO(){
         int total=0;
         for(int i=0;i<wires.length;i++){
-            System.out.println(i);
+//            System.out.println();
             PO[i]  = getPO(wires[i]);
             total+=PO[i];
             if(paramsDebug)
@@ -604,6 +711,8 @@ public class GateParser {
     public int getPO(String wire){
         int result = 0;
         int[] inpgates = getOutputGates(wire);
+//        System.out.println(inpgates[0]);
+//        System.out.println(gateDefinitions[5332]);
         result = getPOForGate(inpgates);
         return result;
     }
@@ -612,7 +721,11 @@ public class GateParser {
         int result = 1;
         boolean flag=true;
         int[] temp;
+        int[] firstGates = GateNumber;
+        ArrayList<Integer> nextGates = new  ArrayList<Integer>();
+        int repeatCounter = 0;
         temp = GateNumber;
+//        System.out.println(firstGates.length);
         while(flag){
             
             if(checkPrimaryOutputForInput(temp))
@@ -620,9 +733,27 @@ public class GateParser {
             else{
                 result++;
                 temp = getNextGates(temp);
+//                System.out.println(temp.length+"  "+repeatCounter);
+                if(temp!=null)
+                if(temp.length==1){
+                    if(firstGates!=null)
+                    if(firstGates.length==1 | firstGates.length==2)
+                    {
+                        if(!nextGates.contains(temp[0]))
+                            nextGates.add(temp[0]);
+                        else repeatCounter++;
+                        if(repeatCounter>wires.length)
+                        {
+                            flag=false;
+                            nullFlag=true;
+                        }
+                        
+                    }
+                }
             }
                 
         }
+        
         if(nullFlag)
         {
             result = largeNum;
@@ -630,6 +761,8 @@ public class GateParser {
         }
         return result;
     }
+    
+    
     public boolean checkPrimaryOutputForInput(int[] inputgates){
         boolean result = false;
         String[] temp;
@@ -649,7 +782,7 @@ public class GateParser {
         return result;
     }
     
-    public static boolean isPrimaryOutput(String input){
+    public boolean isPrimaryOutput(String input){
         boolean result=false;
         for(int i=0;i<primaryOutputs.length;i++)
             if(primaryOutputs[i].trim().equals(input.trim()))
@@ -1693,6 +1826,8 @@ public class GateParser {
         if(input.indexOf("[")>=0){
             result = input.substring(0,input.indexOf("["));
         }
+//        if(input.contains("'"))
+//            result = "";
         return result;
     }
     
