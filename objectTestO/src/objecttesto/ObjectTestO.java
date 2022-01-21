@@ -35,26 +35,32 @@ public class ObjectTestO {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws URISyntaxException, MalformedURLException, IOException {
-          String verilogFilePath="/Users/reza/Desktop/Learneds/s38584-T100/src/TjIn/s38584_scan.v";
-          parseVerilogFile(verilogFilePath);
-          String Trojans="AND2X1 Trojan1 (.IN1(Tj_TriggerIN1), .IN2(Tj_TriggerIN2), .Q(Tj_OUT1));\n" +
-"    AND2X1 Trojan2 (.IN1(Tj_TriggerIN3), .IN2(Tj_TriggerIN4), .Q(Tj_OUT2));\n" +
-"    AND2X1 Trojan3 (.IN1(Tj_TriggerIN5), .IN2(Tj_TriggerIN6), .Q(Tj_OUT3));\n" +
-"    AND2X1 Trojan4 (.IN1(Tj_TriggerIN7), .IN2(Tj_TriggerIN8), .Q(Tj_OUT4));\n" +
-"    NOR4X0 Trojan1234_NOT (.IN1(Tj_OUT1), .IN2(Tj_OUT1), .IN3(Tj_OUT3), .IN4(Tj_OUT4), .QN(Tj_OUT1234));\n" +
-"    AND2X1 Trojan5 (.IN1(Tj_TriggerIN9), .IN2(Tj_TriggerIN10), .Q(Tj_OUT5));\n" +
-"    INVX0 NOT_test_se ( .IN(test_se), .QN(test_se_NOT) );\n" +
-"    AND3X1 Trojan_Trigger ( .IN1(Tj_OUT1234), .IN2(Tj_OUT5), .IN3(test_se_NOT), .Q(Tj_Trigger) );\n" +
-"    OR2X1 Trojan_Payload (.IN1(Tj_Trigger), .IN2(g34028), .Q(g34028_Tj_Payload));";
+//          String verilogFilePath="/Users/reza/Desktop/Learneds/s38584-T100/src/TjIn/s38584_scan.v";
+//          parseVerilogFile(verilogFilePath);
+//          String Trojans="AND2X1 Trojan1 (.IN1(Tj_TriggerIN1), .IN2(Tj_TriggerIN2), .Q(Tj_OUT1));\n" +
+//"    AND2X1 Trojan2 (.IN1(Tj_TriggerIN3), .IN2(Tj_TriggerIN4), .Q(Tj_OUT2));\n" +
+//"    AND2X1 Trojan3 (.IN1(Tj_TriggerIN5), .IN2(Tj_TriggerIN6), .Q(Tj_OUT3));\n" +
+//"    AND2X1 Trojan4 (.IN1(Tj_TriggerIN7), .IN2(Tj_TriggerIN8), .Q(Tj_OUT4));\n" +
+//"    NOR4X0 Trojan1234_NOT (.IN1(Tj_OUT1), .IN2(Tj_OUT1), .IN3(Tj_OUT3), .IN4(Tj_OUT4), .QN(Tj_OUT1234));\n" +
+//"    AND2X1 Trojan5 (.IN1(Tj_TriggerIN9), .IN2(Tj_TriggerIN10), .Q(Tj_OUT5));\n" +
+//"    INVX0 NOT_test_se ( .IN(test_se), .QN(test_se_NOT) );\n" +
+//"    AND3X1 Trojan_Trigger ( .IN1(Tj_OUT1234), .IN2(Tj_OUT5), .IN3(test_se_NOT), .Q(Tj_Trigger) );\n" +
+//"    OR2X1 Trojan_Payload (.IN1(Tj_Trigger), .IN2(g34028), .Q(g34028_Tj_Payload));";
 //          GateParser parser = new GateParser(gatesDefinitionLines,WiresArray,primaryInputs,primaryOutputs,Trojans);
-          String benchmarkName = verilogFilePath.split("/")[5];
+//          String benchmarkName = verilogFilePath.split("/")[5];
 //          parser.saveInFileForScikit("/Users/reza/Desktop/Results/"+benchmarkName+".nomral","/Users/reza/Desktop/Results/"+benchmarkName+".trojan",true);
     
 
-
-    String pathList = "/Users/reza/Desktop/Results/s15850-T100.nomral,/Users/reza/Desktop/Results/RS232-T1400.nomral,/Users/reza/Desktop/Results/RS232-T1500.nomral,/Users/reza/Desktop/Results/s38584-T100.nomral,/Users/reza/Desktop/Results/s35932-T300.trojan,/Users/reza/Desktop/Results/s35932-T200.trojan,/Users/reza/Desktop/Results/RS232-T1300.trojan,/Users/reza/Desktop/Results/RS232-T1200.trojan,/Users/reza/Desktop/Results/s38417-T100.nomral,/Users/reza/Desktop/Results/s38584-T100.trojan,/Users/reza/Desktop/Results/RS232-T1400.trojan,/Users/reza/Desktop/Results/RS232-T1500.trojan,/Users/reza/Desktop/Results/s15850-T100.trojan,/Users/reza/Desktop/Results/s38417-T100.trojan,/Users/reza/Desktop/Results/RS232-T1300.nomral,/Users/reza/Desktop/Results/RS232-T1200.nomral,/Users/reza/Desktop/Results/s35932-T300.nomral,/Users/reza/Desktop/Results/s35932-T200.nomral,/Users/reza/Desktop/Results/RS232-T1000.trojan,/Users/reza/Desktop/Results/RS232-T1100.trojan,/Users/reza/Desktop/Results/s38417-T200.nomral,/Users/reza/Desktop/Results/s38417-T300.nomral,/Users/reza/Desktop/Results/s35932-T100.trojan,/Users/reza/Desktop/Results/RS232-T1600.nomral,/Users/reza/Desktop/Results/s35932-T100.nomral,/Users/reza/Desktop/Results/s38417-T200.trojan,/Users/reza/Desktop/Results/s38417-T300.trojan,/Users/reza/Desktop/Results/RS232-T1000.nomral,/Users/reza/Desktop/Results/RS232-T1100.nomral,/Users/reza/Desktop/Results/RS232-T1600.trojan";
-    FilesParser fileparser = new FilesParser(pathList, "/Users/reza/Desktop/final.txt");
-     
+//
+    String pathList = "/Users/reza/Desktop/Thesis/Results/s15850-T100.nomral,/Users/reza/Desktop/Thesis/Results/RS232-T1400.nomral,/Users/reza/Desktop/Thesis/Results/RS232-T1500.nomral,/Users/reza/Desktop/Thesis/Results/s38584-T100.nomral,/Users/reza/Desktop/Thesis/Results/s35932-T300.trojan,/Users/reza/Desktop/Thesis/Results/s35932-T200.trojan,/Users/reza/Desktop/Thesis/Results/RS232-T1300.trojan,/Users/reza/Desktop/Thesis/Results/RS232-T1200.trojan,/Users/reza/Desktop/Thesis/Results/s38417-T100.nomral,/Users/reza/Desktop/Thesis/Results/s38584-T100.trojan,/Users/reza/Desktop/Thesis/Results/RS232-T1400.trojan,/Users/reza/Desktop/Thesis/Results/RS232-T1500.trojan,/Users/reza/Desktop/Thesis/Results/s15850-T100.trojan,/Users/reza/Desktop/Thesis/Results/s38417-T100.trojan,/Users/reza/Desktop/Thesis/Results/RS232-T1300.nomral,/Users/reza/Desktop/Thesis/Results/RS232-T1200.nomral,/Users/reza/Desktop/Thesis/Results/s35932-T300.nomral,/Users/reza/Desktop/Thesis/Results/s35932-T200.nomral,/Users/reza/Desktop/Thesis/Results/RS232-T1000.trojan,/Users/reza/Desktop/Thesis/Results/RS232-T1100.trojan,/Users/reza/Desktop/Thesis/Results/s38417-T200.nomral,/Users/reza/Desktop/Thesis/Results/s38417-T300.nomral,/Users/reza/Desktop/Thesis/Results/s35932-T100.trojan,/Users/reza/Desktop/Thesis/Results/RS232-T1600.nomral,/Users/reza/Desktop/Thesis/Results/s35932-T100.nomral,/Users/reza/Desktop/Thesis/Results/s38417-T200.trojan,/Users/reza/Desktop/Thesis/Results/s38417-T300.trojan,/Users/reza/Desktop/Thesis/Results/RS232-T1000.nomral,/Users/reza/Desktop/Thesis/Results/RS232-T1100.nomral,/Users/reza/Desktop/Thesis/Results/RS232-T1600.trojan";
+//    FilesParser fileparser = new FilesParser(pathList, "/Users/reza/Desktop/finalWithoutProcess.txt");
+//    fileparser.balanceTrojans("/Users/reza/Desktop/Thesis/justtrojansunified.txt", "/Users/reza/Desktop/Thesis/finalBalancedTrojans.txt", 9);
+//    fileparser.unifyFinalForScikit("/Users/reza/Desktop/Thesis/justtrojans.txt","/Users/reza/Desktop/Thesis/justtrojansunified.txt");
+//    fileparser.calculateAverageOfLines("/Users/reza/Desktop/Thesis/justtrojansunified.txt");
+//      String path1 = "/Users/reza/Desktop/Results/s15850-T100.nomral,/Users/reza/Desktop/Results/RS232-T1400.nomral,/Users/reza/Desktop/Results/RS232-T1500.nomral,/Users/reza/Desktop/Results/s38584-T100.nomral,/Users/reza/Desktop/Results/s35932-T300.trojan,/Users/reza/Desktop/Results/s35932-T200.trojan,/Users/reza/Desktop/Results/RS232-T1300.trojan,/Users/reza/Desktop/Results/RS232-T1200.trojan,/Users/reza/Desktop/Results/s38417-T100.nomral,/Users/reza/Desktop/Results/s38584-T100.trojan,/Users/reza/Desktop/Results/RS232-T1400.trojan,/Users/reza/Desktop/Results/RS232-T1500.trojan,/Users/reza/Desktop/Results/s15850-T100.trojan,/Users/reza/Desktop/Results/s38417-T100.trojan,/Users/reza/Desktop/Results/RS232-T1300.nomral,/Users/reza/Desktop/Results/RS232-T1200.nomral,/Users/reza/Desktop/Results/s35932-T300.nomral,/Users/reza/Desktop/Results/s35932-T200.nomral,/Users/reza/Desktop/Results/RS232-T1000.trojan,/Users/reza/Desktop/Results/RS232-T1100.trojan,/Users/reza/Desktop/Results/s38417-T200.nomral,/Users/reza/Desktop/Results/s38417-T300.nomral,/Users/reza/Desktop/Results/s35932-T100.trojan,/Users/reza/Desktop/Results/RS232-T1600.nomral,/Users/reza/Desktop/Results/s35932-T100.nomral,/Users/reza/Desktop/Results/s38417-T200.trojan,/Users/reza/Desktop/Results/s38417-T300.trojan,/Users/reza/Desktop/Results/RS232-T1000.nomral,/Users/reza/Desktop/Results/RS232-T1100.nomral,/Users/reza/Desktop/Results/RS232-T1600.trojan";
+      String[] modelnames = "RS232-T1000,RS232-T1400,s35932-T100,s38417-T200,RS232-T1100,RS232-T1500,s35932-T200,s38417-T300,RS232-T1200,RS232-T1600,s35932-T300,s38584-T100,RS232-T1300,s15850-T100,s38417-T100".split(",");
+      String path1 = "/Users/reza/Desktop/Thesis/Results/";
+      FilesParser fileparser = new FilesParser(path1, modelnames ,"/Users/reza/Desktop/");
 
 
 
