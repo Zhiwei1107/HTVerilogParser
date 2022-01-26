@@ -53,9 +53,9 @@ public class GateParser {
         FFGates.add("SDFFSRX1");
         FFGates.add("DFFX2");
         FFGates.add("SDFFX1");
+        FFGates.add("DFFARX1");
         
         gateDefinitions = GateDefinitions;
-        
         primaryInputs = PrimaryInputs;
         primaryOutputs = PrimaryOutputs;
         inouts = new String[gateDefinitions.length][2];
@@ -84,6 +84,8 @@ public class GateParser {
         System.out.println("FFO Done");
         calculatePO();
         System.out.println("PO Done");
+//          System.out.println(PrimaryOutputs.length);
+//          getPO("N5");
 //          System.out.println(getPO(wires[5481]));
 //        printVectorsWithWireName();
 //        saveInFile("/Users/reza/Desktop/output.txt");
@@ -115,14 +117,27 @@ public class GateParser {
         System.out.println(temparr.size());
     }
     
+    
     public String[] unifyTrojanNets(String[] arrString){
         ArrayList<String> temparr = new ArrayList<String>();
         
         for(int i=0;i<arrString.length;i++)
             if(!temparr.contains(arrString[i].trim()))
-                temparr.add(arrString[i].trim());
+                if(!checkIfItIsPIorPO(arrString[i].trim()))
+                    temparr.add(arrString[i].trim());
         String[] result = new String[temparr.size()];
         return temparr.toArray(result);
+    }
+    
+    public boolean checkIfItIsPIorPO(String  name){
+        boolean result = false;
+        for(int i=0;i<primaryInputs.length;i++)
+            if(primaryInputs[i].trim().equals(name.trim()))
+                result=true;
+        for(int j=0;j<primaryOutputs.length;j++)
+            if(primaryOutputs[j].trim().equals(name.trim()))
+                result=true;
+        return result;
     }
     
     public void  processTrojanNet(String lines){
@@ -303,8 +318,10 @@ public class GateParser {
 //            bw.append("LGFi,FFi,FFo,PI,PO,Class\n");
         for(int i=0;i<wires.length;i++){
             if(isInTrojanNet(wires[i])){
-                if(!trojans.contains(LGFI[i]+","+FFI[i]+","+FFO[i]+","+PI[i]+","+PO[i]+","+trojan))
+                if(!trojans.contains(LGFI[i]+","+FFI[i]+","+FFO[i]+","+PI[i]+","+PO[i]+","+trojan)){
                     trojans.add(LGFI[i]+","+FFI[i]+","+FFO[i]+","+PI[i]+","+PO[i]+","+trojan);
+                    System.out.println(wires[i]);
+                }
             } else{
                 if(!normals.contains(LGFI[i]+","+FFI[i]+","+FFO[i]+","+PI[i]+","+PO[i]+","+normal))
                     normals.add(LGFI[i]+","+FFI[i]+","+FFO[i]+","+PI[i]+","+PO[i]+","+normal);
@@ -497,7 +514,7 @@ public class GateParser {
     public void calculateFFO(){
         int total=0;
         for(int i=0;i<wires.length;i++){
-//            System.out.println(i);
+//            System.out.println(wires[i]);
             FFO[i]=getFFoOfWire(wires[i].trim());
             total+=FFO[i];
             if(paramsDebug)
@@ -520,7 +537,6 @@ public class GateParser {
         int repeatCounter=0;
         temp = GateNumber;
         while(flag){
-            
             if(checkFFGateForOutput(temp))
                         flag = false;
             else{
@@ -698,7 +714,7 @@ public class GateParser {
     public void calculatePO(){
         int total=0;
         for(int i=0;i<wires.length;i++){
-//            System.out.println();
+            System.out.println(wires[i]);
             PO[i]  = getPO(wires[i]);
             total+=PO[i];
             if(paramsDebug)
@@ -712,7 +728,7 @@ public class GateParser {
         int result = 0;
         int[] inpgates = getOutputGates(wire);
 //        System.out.println(inpgates[0]);
-//        System.out.println(gateDefinitions[5332]);
+        
         result = getPOForGate(inpgates);
         return result;
     }
@@ -725,7 +741,7 @@ public class GateParser {
         ArrayList<Integer> nextGates = new  ArrayList<Integer>();
         int repeatCounter = 0;
         temp = GateNumber;
-//        System.out.println(firstGates.length);
+        int counter = 0;
         while(flag){
             
             if(checkPrimaryOutputForInput(temp))
@@ -749,6 +765,13 @@ public class GateParser {
                         }
                         
                     }
+                }else if(counter<20){
+                        counter++;
+                        
+                    
+                } else {
+                    flag=false;
+                    nullFlag=true;
                 }
             }
                 
@@ -1062,6 +1085,14 @@ public class GateParser {
                 break;
 
             case("MUX21X1"):
+                result = 3;
+                break;
+            
+            case("HADDX1"):
+                result = 2;
+                break;
+                
+            case("DFFARX1"):
                 result = 3;
                 break;
         }
@@ -1771,6 +1802,13 @@ public class GateParser {
                     result = getInputOutputs(line,3,1);
                     break;
                     
+                case("HADDX1"):
+                    result = getInputOutputs(line,2,2);
+                    break;
+                
+                case("DFFARX1"):
+                    result = getInputOutputs(line,3,2);
+                    break;
                 
 
             }
