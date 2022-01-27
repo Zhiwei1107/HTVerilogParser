@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 
 
-bankdata = pd.read_csv("/Users/reza/Desktop/Thesis/ResultsForScikit/RS232-T1300.full")
+bankdata = pd.read_csv("/Users/reza/Desktop/Thesis/Raw/s38584-T300.raw1")
 # bankdata = pd.read_csv("/Users/reza/Desktop/Thesis/ResultsForScikit/s35932-T200.nomral")
 print(bankdata.shape)
 print(bankdata.head())
@@ -16,7 +16,7 @@ X = bankdata.drop('Class', axis=1)
 y = bankdata['Class']
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.9)
-loaded_model = pickle.load(open("/Users/reza/Desktop/Thesis/trainedModels/RS232-T1300-17.sav", 'rb'))
+loaded_model = pickle.load(open("/Users/reza/Desktop/Thesis/trainedModels/s38584-T300-17.sav", 'rb'))
 
 y_pred = loaded_model.predict(X_test)
 # print("###\n")

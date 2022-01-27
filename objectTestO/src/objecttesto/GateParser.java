@@ -295,7 +295,7 @@ public class GateParser {
         String normal="Normal";
         String trojan="Trojan";
         if(!append)
-            bw.append("LGFi,FFi,FFo,PI,PO,Class\n");
+            bw.append("LGFI,FFI,FFO,PI,PO,Class\n");
         for(int i=0;i<wires.length;i++){
             if(isInTrojanNet(wires[i])){
                 bw.append(LGFI[i]+","+FFI[i]+","+FFO[i]+","+PI[i]+","+PO[i]+","+trojan+"\n");
@@ -304,6 +304,30 @@ public class GateParser {
         }
         bw.flush();
         bw.close();
+    }
+    
+    public void saveRawInFileForScikit(String path,boolean append) throws IOException{
+        BufferedWriter bw  =  new BufferedWriter(new FileWriter(new File(path),append));
+        ArrayList<String> normals = new  ArrayList<String>();
+        ArrayList<String> trojans = new  ArrayList<String>();
+        bw.append("LGFI,FFI,FFO,PI,PO,Class\n");
+        for(int i=0;i<wires.length;i++){
+            if(isInTrojanNet(wires[i]))
+                trojans.add(LGFI[i]+","+FFI[i]+","+FFO[i]+","+PI[i]+","+PO[i]+",1");
+            else  
+                normals.add(LGFI[i]+","+FFI[i]+","+FFO[i]+","+PI[i]+","+PO[i]+",0");
+            
+        }
+
+
+        for(int i=0;i<normals.size();i++)
+                bw.append(normals.get(i)+"\n");
+        for(int i=0;i<trojans.size();i++)
+                bw.append(trojans.get(i)+"\n");      
+
+        bw.flush();
+        bw.close();
+
     }
     
     
@@ -339,6 +363,9 @@ public class GateParser {
         bw1.flush();
         bw1.close();
     }
+    
+    
+    
     
     
 /**
@@ -714,7 +741,7 @@ public class GateParser {
     public void calculatePO(){
         int total=0;
         for(int i=0;i<wires.length;i++){
-            System.out.println(wires[i]);
+//            System.out.println(wires[i]);
             PO[i]  = getPO(wires[i]);
             total+=PO[i];
             if(paramsDebug)

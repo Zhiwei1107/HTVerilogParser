@@ -15,7 +15,7 @@ for benchmark in Benchmarks:
 	X = bankdata.drop('Class', axis=1)
 	y = bankdata['Class']
 	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.01)
-	svclassifier = SVC(kernel='rbf',C=34, gamma=0.001)
+	svclassifier = SVC(kernel='rbf',C=12, gamma=0.04)
 	svclassifier.fit(X_train, y_train)
 	filename = '/Users/reza/Desktop/Thesis/trainedModels/'+benchmark+'-17.sav'
 	pickle.dump(svclassifier, open(filename, 'wb'))
@@ -31,4 +31,6 @@ for benchmark in Benchmarks:
 	# print(confusion_matrix(y_test,y_pred))
 	tpr = tp/(tp+fn)
 	tnr = tn/(tn+fp)
-	print(benchmark,"\t",fn,"\t",tp,"\t",int(tpr*100),"\t",int(tnr*100))
+	print(benchmark,"\t",fn,"\t",tp,"\t",int(tpr*100),"%\t",int(tnr*100),"%")
+	# print(benchmark,"\t",int(tpr*100),"%\t",int(tnr*100),"%")
+
