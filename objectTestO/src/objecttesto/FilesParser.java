@@ -41,6 +41,53 @@ public class FilesParser {
 //        
     }
     
+    public FilesParser(String path, String outputFilePath,int mod) throws IOException {
+        
+        makeLearnFilesForEveryUnknown(path,outputFilePath, mod);
+//        
+    }
+    
+    public void makeLearnFilesForEveryUnknown(String basePath,String outputPath,int n) throws FileNotFoundException, IOException{
+        boolean  append=true;
+        BufferedReader br;
+        BufferedWriter bw;
+        String temp="";
+        ArrayList<String> normals;
+        ArrayList<String> trojans;
+        int counter = 0;
+        int trojcount  = 0;
+        bw = new BufferedWriter(new FileWriter(new File(outputPath),append));
+        normals = new ArrayList<String>();
+        trojans = new ArrayList<String>();
+        bw.append("LGFI,FFI,FFO,PI,PO,Class\n");
+        br = new BufferedReader(new FileReader(new File(basePath)));
+        while((temp=br.readLine())!=null){
+                temp  =  temp.replaceAll("\\s+", " ").trim().replace("Normal","0");
+                if(temp.split(",")[5].trim()=="0"){
+                    if(!normals.contains(temp)){
+                        normals.add(temp);
+                        bw.append(temp+"\n");
+                        counter++;
+                    }
+                } else {
+                    if(!trojans.contains(temp)){
+                        normals.add(temp);
+                        bw.append(temp+"\n");
+                        trojcount++;
+                    }
+
+                }
+        }
+        for(int  i=0;i<(counter/trojcount)+1;i++)
+            for(int j=0;j<trojans.size();j++)
+                bw.append(trojans.get(j)+"\n");
+
+        bw.flush();
+        bw.close();
+        br.close();
+
+    }
+    
     public void makeLearnFilesForEveryUnknown(String basePath,String[] benchmarkNames,String outputPath) throws FileNotFoundException, IOException{
         boolean  append=true;
         BufferedReader br;

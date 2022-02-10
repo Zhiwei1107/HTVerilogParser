@@ -54,6 +54,8 @@ public class GateParser {
         FFGates.add("DFFX2");
         FFGates.add("SDFFX1");
         FFGates.add("DFFARX1");
+        FFGates.add("DFFLES2");
+
         
         gateDefinitions = GateDefinitions;
         primaryInputs = PrimaryInputs;
@@ -376,7 +378,7 @@ public class GateParser {
     public void calculateFFI(){
         int total=0;
         for(int i=0;i<wires.length;i++){
-//            System.out.println(wires[i]);
+            System.out.println(wires[i]);
             FFI[i]=getFFiOfWire(wires[i].trim());
             total+=FFI[i];
             if(paramsDebug)
@@ -413,6 +415,9 @@ public class GateParser {
     
     public int getFFI(int[] GateNumber){
        int result = 0;
+       int counter=0;
+       int counter1=0;
+       int tempo=0;
         boolean flag=true;
         int[] temp;
         temp = GateNumber;
@@ -422,12 +427,30 @@ public class GateParser {
                         flag = false;
             else{
                 result++;
+                tempo=temp.length;
                 temp = getPreviousGates(temp);
+                System.out.println(temp.length);
+                if(temp.length==tempo)
+                    counter++;
+                else 
+                    counter1++;
+                if(counter>wires.length){
+                    nullFlag=true;
+                    flag=false;
+                    break;
+                }
+                if(counter1>wires.length){
+                    nullFlag=true;
+                    flag=false;
+                    break;
+                }
+                    
             }
                 
         }
         if(nullFlag)
         {
+            
             result = largeNum;
             nullFlag  = false;
         }
@@ -541,7 +564,7 @@ public class GateParser {
     public void calculateFFO(){
         int total=0;
         for(int i=0;i<wires.length;i++){
-//            System.out.println(wires[i]);
+            System.out.println(wires[i]);
             FFO[i]=getFFoOfWire(wires[i].trim());
             total+=FFO[i];
             if(paramsDebug)
@@ -558,6 +581,8 @@ public class GateParser {
     public int getFFO(int[] GateNumber){
         int result = 0;
         boolean flag=true;
+        int counter=0;
+        int tempo=0;
         int[] temp;
         int[] firstGates = GateNumber;
         ArrayList<Integer> nextGates = new ArrayList<Integer>();
@@ -568,8 +593,9 @@ public class GateParser {
                         flag = false;
             else{
                 result++;
+                tempo=temp.length;
                 temp = getNextGates(temp);
-                if(temp!=null)
+                if(temp!=null){
                 if(temp.length==1){
                     if(firstGates.length==1)
                     {
@@ -584,11 +610,19 @@ public class GateParser {
                         
                     }
                 }
+                
+                    counter++;
+                if(counter>wires.length){
+                    nullFlag=true;
+                    break;
+                }
+                }
             }
                 
         }
         if(nullFlag)
         {
+            
             result = largeNum;
             nullFlag  = false;
         }
@@ -666,7 +700,7 @@ public class GateParser {
     public void calculatePI(){
         int total=0;
         for(int i=0;i<wires.length;i++){
-//            System.out.println(i);
+            System.out.println(wires[i]);
             PI[i]  = getPI(wires[i]);
             total+=PI[i];
             if(paramsDebug)
@@ -686,6 +720,8 @@ public class GateParser {
     public int getPIForGate(int[] GateNumber){
         int result = 1;
         boolean flag=true;
+        int tempo=0;
+        int counter = 0;
         int[] temp;
         temp = GateNumber;
         while(flag){
@@ -694,7 +730,14 @@ public class GateParser {
                         flag = false;
             else{
                 result++;
+                tempo= temp.length;
                 temp = getPreviousGates(temp);
+                if(temp.length==tempo)
+                    counter++;
+                if(counter>wires.length){
+                    nullFlag=true;
+                    break;
+                }
             }
                 
         }
@@ -1120,6 +1163,21 @@ public class GateParser {
                 break;
                 
             case("DFFARX1"):
+                result = 3;
+                break;
+            case("I1S1"):
+                result = 1;
+                break;
+            case("IB1S1"):
+                result = 1;
+                break;
+            case("IB1S2"):
+                result = 1;
+                break;
+            case("HI1S1"):
+                result = 1;
+                break;
+            case("DFFLES2"):
                 result = 3;
                 break;
         }
@@ -1665,6 +1723,23 @@ public class GateParser {
                 if(debug)
                     System.out.println(result[0]+"\t"+result[1]);
                 break;
+                
+
+                case("I1S1"):
+                    result = getInputOutputs(line,1,1);
+                    break;
+                case("IB1S1"):
+                    result = getInputOutputs(line,1,1);
+                    break;
+                case("IB1S2"):
+                    result = getInputOutputs(line,1,1);
+                    break;
+                case("HI1S1"):
+                    result = getInputOutputs(line,1,1);
+                    break;
+                case("DFFLES2"):
+                    result = getInputOutputs(line,3,1);
+                    break;
                 case("LSDNENX1"):
                     result = getInputOutputs(line,2,1);
                     break;

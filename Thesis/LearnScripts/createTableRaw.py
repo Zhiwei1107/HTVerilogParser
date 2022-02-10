@@ -9,15 +9,16 @@ from sklearn.metrics import classification_report, confusion_matrix
 
 
 Benchmarks = ["RS232-T1000","RS232-T1100","RS232-T1200","RS232-T1300","RS232-T1400","RS232-T1500","RS232-T1600","s15850-T100","s35932-T100","s35932-T200","s35932-T300","s38417-T100","s38417-T200","s38417-T300","s38584-T100","s38584-T200","s38584-T300"]
-CParam=8 
+CParam=16 
 GammaParam=0.02
+cf=0.001
 print("C:",CParam,"\nGamma:",GammaParam,"\n")
 for benchmark in Benchmarks:
 	bankdata = pd.read_csv("/Users/reza/Desktop/Thesis/unifiedBalancedOfEveryBenchmark/17files/"+benchmark+".unk")
 	X = bankdata.drop('Class', axis=1)
 	y = bankdata['Class']
 	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.01)
-	svclassifier = SVC(kernel='rbf',C=CParam, gamma=GammaParam)
+	svclassifier = SVC(kernel='rbf',C=CParam, gamma=GammaParam,coef0=cf)
 	svclassifier.fit(X_train, y_train)
 	filename = '/Users/reza/Desktop/Thesis/trainedModels/'+benchmark+'-17.sav'
 	pickle.dump(svclassifier, open(filename, 'wb'))

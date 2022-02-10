@@ -7,6 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 
 
+
 bankdata = pd.read_csv("/Users/reza/Desktop/input_router.raw")
 # bankdata = pd.read_csv("/Users/reza/Desktop/Thesis/ResultsForScikit/s35932-T200.nomral")
 print(bankdata.shape)
