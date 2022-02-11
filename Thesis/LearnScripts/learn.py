@@ -13,16 +13,18 @@ print(bankdata.head())
 
 X = bankdata.drop('Class', axis=1)
 y = bankdata['Class']
+X = X.drop('FFO', axis=1)
 
-
+print(X.shape)
+# exit()
 start_time = time.time()
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.01)
 
 print(X_test)
 
-svclassifier = SVC(kernel='rbf',C=4, gamma=0.01)
+svclassifier = SVC(kernel='rbf',C=32, gamma=0.1)
 svclassifier.fit(X_train, y_train)
 
-filename = '/Users/reza/Desktop/Thesis/trainedModels/RS232-T1300-17.sav'
+filename = '/Users/reza/Desktop/withoutFFO.sav'
 pickle.dump(svclassifier, open(filename, 'wb'))
 print("--- %s seconds ---" % (time.time() - start_time))
