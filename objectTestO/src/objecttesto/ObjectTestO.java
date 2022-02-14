@@ -35,34 +35,63 @@ public class ObjectTestO {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws URISyntaxException, MalformedURLException, IOException { 
-//        String path = "/Users/reza/Desktop/Thesis/RaveNOCVerilog/Modules/input_datapath.v";
-//        String wireslist="from_input_req_in_jump_input_datapathput_datapath,from_input_resp_input_datapath,to_output_req_in_jump_input_datapathput_datapath,to_output_resp_input_datapath,vc_ch_act_in_input_datapath,vc_ch_act_out_input_datapath,i_input_datapath,j_input_datapath,_sv2v_jump_input_datapath,req_in_jump_input_datapath,req_out_jump_input_datapath,xnor1resu_input_datapath,xnor2resu_input_datapath,and1resu_input_datapath,cond1line_input_datapath,req_in_jump_input_datapath_not,and2resu_input_datapath,xor1resu_input_datapath,nand1resu_input_datapath,xnor23resu_input_datapath,and4resu_input_datapath,write_flit_vc_buffer,norres_vc_buffer_vc_buffer,full_vc_buffer,empty_vc_buffer,error_vc_buffer,read_flit_vc_buffer,locked_by_route_ff_vc_buffer,next_locked_vc_buffer,orres_vc_buffer,or1res_vc_buffer,or2res_vc_buffer,finres1_vc_buffer,andres1_vc_buffer,full_vc_buffer_not,locked_by_route_ff_vc_buffer_not,thirdand_vc_buffer,u1temp_fifomodule,u2temp_fifomodule,u4temp_fifomodule,full_vc_buffer_not_fifomodule,u7temp_fifomodule,u9temp_fifomodule,u10carry_fifomodule,u11carry_fifomodule,empty_vc_buffer_not_fifomodule,u13temp_fifomodule,u14temp_fifomodule,u15carry_fifomodule,u16carry_fifomodule,u17res_fifomodule,u18res_fifomodule,write_ptr_ff_fifomodule_0_not,write_ptr_ff_fifomodule_1_not,b0wire_fifomodule,b1wire_fifomodule,u23temp_fifomodule_not_fifomodule,u23temp_fifomodule,boutb_fifomodule,bouta_fifomodule,boutmain_fifomodule,arst_value_fifomodule,write_flit1_vc_buffer1,norres_vc_buffer1_vc_buffer1,full_vc_buffer1,empty_vc_buffer1,error_vc_buffer1,read_flit1_vc_buffer1,locked_by_route_ff_vc_buffer1,next_locked_vc_buffer1,orres_vc_buffer1,or1res_vc_buffer1,or2res_vc_buffer1,finres1_vc_buffer1,andres1_vc_buffer1,full_vc_buffer1_not1,locked_by_route_ff_vc_buffer1_not1,thirdand_vc_buffer1,u1temp_fifomodule1,u2temp_fifomodule1,u4temp_fifomodule1,full_vc_buffer1_not1_fifomodule1,u7temp_fifomodule1,u9temp_fifomodule1,u10carry_fifomodule1,u11carry_fifomodule1,empty_vc_buffer1_not_fifomodule1,u13temp_fifomodule1,u14temp_fifomodule1,u15carry_fifomodule1,u16carry_fifomodule1,u17res_fifomodule1,u18res_fifomodule1,write_ptr_ff_fifomodule1_0_not1,write_ptr_ff_fifomodule1_1_not1,b0wire_fifomodule1,b1wire_fifomodule1,u23temp_fifomodule1_not_fifomodule1,u23temp_fifomodule1,boutb_fifomodule1,bouta_fifomodule1,boutmain_fifomodule1,arst_value_fifomodule1,write_flit2_vc_buffer2,norres_vc_buffer2_vc_buffer2,full_vc_buffer2,empty_vc_buffer2,error_vc_buffer2,read_flit2_vc_buffer2,locked_by_route_ff_vc_buffer2,next_locked_vc_buffer2,orres_vc_buffer2,or1res_vc_buffer2,or2res_vc_buffer2,finres1_vc_buffer2,andres1_vc_buffer2,full_vc_buffer2_not2,locked_by_route_ff_vc_buffer2_not2,thirdand_vc_buffer2,u1temp_fifomodule2,u2temp_fifomodule2,u4temp_fifomodule2,full_vc_buffer2_not2_fifomodule2,u7temp_fifomodule2,u9temp_fifomodule2,u10carry_fifomodule2,u11carry_fifomodule2,empty_vc_buffer2_not_fifomodule2,u13temp_fifomodule2,u14temp_fifomodule2,u15carry_fifomodule2,u16carry_fifomodule2,u17res_fifomodule2,u18res_fifomodule2,write_ptr_ff_fifomodule2_0_not2,write_ptr_ff_fifomodule2_1_not2,b0wire_fifomodule2,b1wire_fifomodule2,u23temp_fifomodule2_not_fifomodule2,u23temp_fifomodule2,boutb_fifomodule2,bouta_fifomodule2,boutmain_fifomodule2,arst_value_fifomodule2,flit,flit1,flit2,fifo_ff_fifomodule,fifo_ff_fifomodule1,fifo_ff_fifomodule2,write_ptr_ff_fifomodule,read_ptr_ff_fifomodule,next_write_ptr_fifomodule,next_read_ptr_fifomodule,fifo_ocup_fifomodule,write_ptr_ff_fifomodule1,read_ptr_ff_fifomodule1,next_write_ptr_fifomodule1,next_read_ptr_fifomodule1,fifo_ocup_fifomodule1,write_ptr_ff_fifomodule2,read_ptr_ff_fifomodule2,next_write_ptr_fifomodule2,next_read_ptr_fifomodule2,fifo_ocup_fifomodule2";
-//        BufferedReader br  =  new BufferedReader(new FileReader(new File(path)));
+//        String path = "/Users/reza/Desktop/Thesis/RaveNOCVerilog/Infected/";
+//        String storagePath =  "/Users/reza/Desktop/";
+//        ArrayList<String> normals =  new ArrayList<String>();
+//        ArrayList<String> trojans =  new ArrayList<String>();
+////        String wireslist="from_input_req_in_jump_input_datapathput_datapath,from_input_resp_input_datapath,to_output_req_in_jump_input_datapathput_datapath,to_output_resp_input_datapath,vc_ch_act_in_input_datapath,vc_ch_act_out_input_datapath,i_input_datapath,j_input_datapath,_sv2v_jump_input_datapath,req_in_jump_input_datapath,req_out_jump_input_datapath,xnor1resu_input_datapath,xnor2resu_input_datapath,and1resu_input_datapath,cond1line_input_datapath,req_in_jump_input_datapath_not,and2resu_input_datapath,xor1resu_input_datapath,nand1resu_input_datapath,xnor23resu_input_datapath,and4resu_input_datapath,write_flit_vc_buffer,norres_vc_buffer_vc_buffer,full_vc_buffer,empty_vc_buffer,error_vc_buffer,read_flit_vc_buffer,locked_by_route_ff_vc_buffer,next_locked_vc_buffer,orres_vc_buffer,or1res_vc_buffer,or2res_vc_buffer,finres1_vc_buffer,andres1_vc_buffer,full_vc_buffer_not,locked_by_route_ff_vc_buffer_not,thirdand_vc_buffer,u1temp_fifomodule,u2temp_fifomodule,u4temp_fifomodule,full_vc_buffer_not_fifomodule,u7temp_fifomodule,u9temp_fifomodule,u10carry_fifomodule,u11carry_fifomodule,empty_vc_buffer_not_fifomodule,u13temp_fifomodule,u14temp_fifomodule,u15carry_fifomodule,u16carry_fifomodule,u17res_fifomodule,u18res_fifomodule,write_ptr_ff_fifomodule_0_not,write_ptr_ff_fifomodule_1_not,b0wire_fifomodule,b1wire_fifomodule,u23temp_fifomodule_not_fifomodule,u23temp_fifomodule,boutb_fifomodule,bouta_fifomodule,boutmain_fifomodule,arst_value_fifomodule,write_flit1_vc_buffer1,norres_vc_buffer1_vc_buffer1,full_vc_buffer1,empty_vc_buffer1,error_vc_buffer1,read_flit1_vc_buffer1,locked_by_route_ff_vc_buffer1,next_locked_vc_buffer1,orres_vc_buffer1,or1res_vc_buffer1,or2res_vc_buffer1,finres1_vc_buffer1,andres1_vc_buffer1,full_vc_buffer1_not1,locked_by_route_ff_vc_buffer1_not1,thirdand_vc_buffer1,u1temp_fifomodule1,u2temp_fifomodule1,u4temp_fifomodule1,full_vc_buffer1_not1_fifomodule1,u7temp_fifomodule1,u9temp_fifomodule1,u10carry_fifomodule1,u11carry_fifomodule1,empty_vc_buffer1_not_fifomodule1,u13temp_fifomodule1,u14temp_fifomodule1,u15carry_fifomodule1,u16carry_fifomodule1,u17res_fifomodule1,u18res_fifomodule1,write_ptr_ff_fifomodule1_0_not1,write_ptr_ff_fifomodule1_1_not1,b0wire_fifomodule1,b1wire_fifomodule1,u23temp_fifomodule1_not_fifomodule1,u23temp_fifomodule1,boutb_fifomodule1,bouta_fifomodule1,boutmain_fifomodule1,arst_value_fifomodule1,write_flit2_vc_buffer2,norres_vc_buffer2_vc_buffer2,full_vc_buffer2,empty_vc_buffer2,error_vc_buffer2,read_flit2_vc_buffer2,locked_by_route_ff_vc_buffer2,next_locked_vc_buffer2,orres_vc_buffer2,or1res_vc_buffer2,or2res_vc_buffer2,finres1_vc_buffer2,andres1_vc_buffer2,full_vc_buffer2_not2,locked_by_route_ff_vc_buffer2_not2,thirdand_vc_buffer2,u1temp_fifomodule2,u2temp_fifomodule2,u4temp_fifomodule2,full_vc_buffer2_not2_fifomodule2,u7temp_fifomodule2,u9temp_fifomodule2,u10carry_fifomodule2,u11carry_fifomodule2,empty_vc_buffer2_not_fifomodule2,u13temp_fifomodule2,u14temp_fifomodule2,u15carry_fifomodule2,u16carry_fifomodule2,u17res_fifomodule2,u18res_fifomodule2,write_ptr_ff_fifomodule2_0_not2,write_ptr_ff_fifomodule2_1_not2,b0wire_fifomodule2,b1wire_fifomodule2,u23temp_fifomodule2_not_fifomodule2,u23temp_fifomodule2,boutb_fifomodule2,bouta_fifomodule2,boutmain_fifomodule2,arst_value_fifomodule2,flit,flit1,flit2,fifo_ff_fifomodule,fifo_ff_fifomodule1,fifo_ff_fifomodule2,write_ptr_ff_fifomodule,read_ptr_ff_fifomodule,next_write_ptr_fifomodule,next_read_ptr_fifomodule,fifo_ocup_fifomodule,write_ptr_ff_fifomodule1,read_ptr_ff_fifomodule1,next_write_ptr_fifomodule1,next_read_ptr_fifomodule1,fifo_ocup_fifomodule1,write_ptr_ff_fifomodule2,read_ptr_ff_fifomodule2,next_write_ptr_fifomodule2,next_read_ptr_fifomodule2,fifo_ocup_fifomodule2";
+//        String[] modules = {"input/input_router","output/output_module","fifo/vc_buffer","arbiter/rr_arbiter"};
 //        String temp  =  "";
-//        while((temp = br.readLine())!=null)
-//        {
-//            System.out.println(addStringToWireNames(wireslist,"4",temp));
+//        BufferedReader br;
+//        BufferedWriter bwnormal = new BufferedWriter(new FileWriter(new File(storagePath+"infected.normal"),true));
+//        BufferedWriter bwtrojan = new BufferedWriter(new FileWriter(new File(storagePath+"infected.trojan"),true));
+//        int counter = 0;
+//        for(int j=0;j<modules.length;j++)
+//        for(int i=0;i<8;i++){
+//            if(i==0)
+//                br  =  new BufferedReader(new FileReader(new File(path+modules[j]+".raw")));
+//            else 
+//                br  =  new BufferedReader(new FileReader(new File(path+modules[j]+i+".raw")));
+//
+//            while((temp = br.readLine())!=null)
+//            {
+//                if(counter==0){
+//                    counter++;
+//                    continue;
+//                } else {
+//                    if(temp.trim().split(",")[5].trim().equals("0")){
+//                        if(!normals.contains(temp.trim())){
+//                            normals.add(temp.trim());
+//                            bwnormal.append(temp.trim()+"\n");
+//                        }
+//                    } else {
+//                        if(!trojans.contains(temp.trim())){
+//                            trojans.add(temp.trim());
+//                            bwtrojan.append(temp.trim()+"\n");
+//                        }
+//                    }
+//                        
+//                }
+//                
+//                
+//            }
 //        }
-
+//        bwtrojan.flush();
+//        bwnormal.flush();
+//        bwtrojan.close();
+//        bwnormal.close();
+////        br.close();
 //        System.exit(0);
-          String verilogFilePath="/Users/reza/Desktop/Thesis/RaveNOCVerilog/Infected/output/output_module7.v";
+          String verilogFilePath="/Users/reza/Desktop/Thesis/RaveNOCVerilog/Infected/output/output_moduletest6.v";
           parseVerilogFile(verilogFilePath);
-          String Trojans="NOR4X1 trig119_0U1 ( .DIN1(trig119_0n1), .DIN2(trig119_0n2), .DIN3(or12resu12_output_module), .DIN4(trig119_0n3), .Q(Trigger_en0_0)         );\n" +
-"  OR2X1 trig119_0U2 ( .DIN1(xnores_high_prior_arbiter22), .DIN2(xnores_high_prior_arbiter21), .Q(trig119_0n3) );\n" +
-"  I1S1 trig119_0U3 ( .DIN(trig119_0n4), .Q(trig119_0n2) );\n" +
-"  NOR4X1 trig119_0U4 ( .DIN1(xnores_high_prior_arbiter21), .DIN2(and4resu1_output_module), .DIN3(fin_req_i[i_output_module[1:0]*37+14]), .DIN4(fin_req_i[i_output_module[1:0]*37+15]), .Q(trig119_0n4) );\n" +
-"  NAND4X1 trig119_0U5 ( .DIN1(fin_req_i[i_output_module[1:0]*37+16]), .DIN2(trig119_0n5), .DIN3(fin_req_i[i_output_module[1:0]*37+17]), .DIN4(trig119_0n6), .Q(trig119_0n1) );\n" +
-"  NOR4X1 trig119_0U6 ( .DIN1(and6resu1_output_module), .DIN2(and1resu1_output_module), .DIN3(thirdif_rr_arbiter1), .DIN4(thirdif_rr_arbiter2), .Q(trig119_0n6)         );\n" +
-"  I1S1 trig119_0U7 ( .DIN(and9resu1_output_module), .Q(trig119_0n5) );\n" +
-"  DFFX2 troj35_0counter_reg_0_ ( .DIN(troj35_0n2), .CLK(clk), .Q(troj35_0counter_0_) );\n" +
-"  DFFLES2 troj35_0counter_reg_1_ ( .DIN(troj35_0N1), .EB(troj35_0n1), .CLK(clk), .Q(troj35_0counter_1_) );\n" +
-"  DFFLES2 troj35_0Trojan_out0_reg ( .CLRB(troj35_0counter_0_), .DIN(troj35_0counter_1_), .CLK(clk), .Q(        Trojan_out0) );\n" +
-"  HI1S1 troj35_0U3 ( .DIN(Trigger_en0_0), .Q(troj35_0n1) );\n" +
-"  XOR2X1 troj35_0U4 ( .DIN1(troj35_0counter_0_), .DIN2(Trigger_en0_0), .Q(troj35_0n2) );\n" +
-"  XOR2X1 troj35_0U5 ( .DIN1(troj35_0counter_1_), .DIN2(troj35_0counter_0_), .Q(troj35_0N1) );\n" +
-"  XOR2X1 trojan35_0  (.DIN1(tempn1290), .DIN2(Trojan_out0), .Q(and8resu1_output_module) );";
+          String Trojans="NOR2X1 trig39_0U1 ( .DIN1(trig39_0n1), .DIN2(trig39_0n2), .Q(Trigger_en0_0) );\n" +
+"      OR5X1 trig39_0U2 ( .DIN1(i_0_not_high_prior_arbiter21), .DIN2(xnores_high_prior_arbiter21), .DIN3(xnor2resu1_output_module), .DIN4(and5resu1_output_module), .DIN5(trig39_0n3),.Q(trig39_0n2) );\n" +
+"      I1S1 trig39_0U3 ( .DIN(mask_req_rr_arbiter[0]), .Q(trig39_0n3) );\n" +
+"      OR5X1 trig39_0U4 ( .DIN1(temp_mask_ff_rr_arbiter11[0]), .DIN2(temp_mask_ff_rr_arbiter11[1]), .DIN3(i_output_module[15]), .DIN4(i_output_module[16]), .DIN5(head_flit_output_module_32_not_output_module),.Q(trig39_0n1) );\n" +
+"      IB1S1 troj9_0U4 ( .DIN(troj9_01'b0), .Q(Trojan_out0) );\n" +
+"      XOR2X1 trojan9_0  (.DIN1(tempn150), .DIN2(Trojan_out0), .Q(and9resu1_output_module) );";
           GateParser parser = new GateParser(gatesDefinitionLines,WiresArray,primaryInputs,primaryOutputs,Trojans);
-          String benchmarkName = "output_module7";
+          String benchmarkName = "output_moduletest6";
           parser.saveRawInFileForScikit("/Users/reza/Desktop/Thesis/RaveNOCVerilog/Infected/"+benchmarkName+".raw", true);
 //          parser.saveInFileForScikit("/Users/reza/Desktop/"+benchmarkName+".nomral","/Users/reza/Desktop/"+benchmarkName+".trojan",true);
           

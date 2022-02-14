@@ -206,6 +206,7 @@ public class GateParser {
             tempstr = tempstr.substring(loc);
             loc = tempstr.indexOf("(")+1;
             temp = tempstr.indexOf(")");
+//            System.out.println(tempstr);
             result += ","+nullRemover(tempstr.substring(loc,temp).trim());
         }
         
@@ -1180,6 +1181,12 @@ public class GateParser {
             case("DFFLES2"):
                 result = 3;
                 break;
+            case "OR5X1":
+                result = 5;
+                break;
+            case "NOR5X1":
+                result = 5;
+                break;
         }
         return result;
     }
@@ -1911,7 +1918,12 @@ public class GateParser {
                 case("DFFARX1"):
                     result = getInputOutputs(line,3,2);
                     break;
-                
+                case "OR5X1":
+                    result = getInputOutputs(line,5,1);
+                    break;
+                case "NOR5X1":
+                    result = getInputOutputs(line,5,1);
+                    break;
 
             }
         
@@ -1936,6 +1948,7 @@ public class GateParser {
                 tempstr = tempstr.substring(loc);
                 loc = tempstr.indexOf("(")+1;
                 temp = tempstr.indexOf(")");
+                System.out.println(tempstr);
                 result[0] += ","+nullRemover(tempstr.substring(loc,temp).trim());
             }
         }

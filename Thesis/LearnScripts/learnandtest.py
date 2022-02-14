@@ -17,7 +17,7 @@ Crange  = [0.001,0.002,0.005,0.01,0.02,0.05,0.1,0.2,0.5,1,2,4,8,16,32,40]
 gammaRange = [0.001,0.002,0.005,0.01,0.02,0.05,0.1,0.2,0.5,1,2,4,8,16,32,40]
 for Cparam in Crange:
 	for Gammaparam in gammaRange:
-		bankdata = pd.read_csv("/Users/reza/Desktop/withoutFFIO.unk")
+		bankdata = pd.read_csv("/Users/reza/Desktop/Thesis/unifiedBalancedOfEveryBenchmark/17files/RS232-T1300.unk")
 		# print(bankdata.shape)
 		# print(bankdata.head())
 
@@ -35,7 +35,7 @@ for Cparam in Crange:
 		svclassifier = SVC(kernel='rbf',C=Cparam, gamma=Gammaparam)
 		svclassifier.fit(X_train, y_train)
 
-		filename = '/Users/reza/Desktop/withoutFFIO.sav'
+		filename = '/Users/reza/Desktop/prev-t1300.sav'
 		pickle.dump(svclassifier, open(filename, 'wb'))
 		# print("--- %s seconds ---" % (time.time() - start_time))
 
@@ -49,23 +49,23 @@ for Cparam in Crange:
 		addressOfFile=""
 		addressOfFile1=""
 		average = 0.00001
-		for i in range(0,8):
+		for i in range(1,7):
 			
 			# print(bench)
 			for bench in Benchmarks:
 				if bench=="input":
-					filename="input_router"
+					filename="input_routertest"
 				elif bench =="fifo":
-					filename="vc_buffer"
+					filename="vc_buffertest"
 				elif bench =="output":
-					filename="output_module"
+					filename="output_moduletest"
 				elif bench =="arbiter":
-					filename="rr_arbiter"
+					filename="rr_arbitertest"
 				if i==0:
-					addressOfFile="/Users/reza/Desktop/Thesis/RaveNOCVerilog/Infected/"+bench+"/"+filename+"WFFIO.raw"
+					addressOfFile="/Users/reza/Desktop/Thesis/RaveNOCVerilog/Infected/"+bench+"/"+filename+".raw"
 					addressOfFile1="/Users/reza/Desktop/Thesis/RaveNOCVerilog/Infected/"+bench+"/"+filename+".v"
 				else:
-					addressOfFile="/Users/reza/Desktop/Thesis/RaveNOCVerilog/Infected/"+bench+"/"+filename+str(i)+"WFFIO.raw"
+					addressOfFile="/Users/reza/Desktop/Thesis/RaveNOCVerilog/Infected/"+bench+"/"+filename+str(i)+".raw"
 					addressOfFile1="/Users/reza/Desktop/Thesis/RaveNOCVerilog/Infected/"+bench+"/"+filename+str(i)+".v"
 				# print(addressOfFile)
 				bankdata = pd.read_csv(addressOfFile)
@@ -77,7 +77,7 @@ for Cparam in Crange:
 				y = bankdata['Class']
 
 				X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.9)
-				loaded_model = pickle.load(open("/Users/reza/Desktop/withoutFFIO.sav", 'rb'))
+				loaded_model = pickle.load(open("/Users/reza/Desktop/prev-t1300.sav", 'rb'))
 
 				y_pred = loaded_model.predict(X_test)
 				# print("###\n")
@@ -93,17 +93,15 @@ for Cparam in Crange:
 				file = open(addressOfFile1)
 				data = file.read()
 
-				tableTPR=tableTPR+str("{:.2f}".format(tpr))+"\t"+str(tp)+"\t"+str(fn)+"\t"
+				tableTPR=tableTPR+str("{:.2f}".format(tpr))+","+str(data.count("DFFX2")+data.count("DFFLES2"))+"\t"+str(tp)+"\t"+str(fn)+"\t"
 				tableTNR=tableTNR+str("{:.2f}".format(tnr))+"\t"
-				if bench=="fifo" and i!=7:
-					average = average+tpr;
-				if bench=="fifo" and i==7:
-					average = average+tpr;
-					average = average/8;
+				average = average+tpr;
+				
 			
 
 			tableTPR=tableTPR+"\n"
 			tableTNR=tableTNR+"\n"
+		average =  average/24
 		if(average>bestAverge):
 						bestAverge=average;
 						bestC=Cparam
